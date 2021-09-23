@@ -1,9 +1,6 @@
 #include "XvbaCom.h"
-#include "XvbaInvoke.h"
-#include <iostream>
 #include "windows.h"
-
-
+#include <iostream>
 
 enum XVBA_ERROR {
 
@@ -13,35 +10,6 @@ enum XVBA_ERROR {
     GET_WORKBOOK = -144,
 
 };
-
-int XvbaImportVBA(LPCTSTR szFilename) {
-
-	
-	HRESULT hr;
-	IDispatch *pExcelCOM = (IDispatch*)NULL;
-    IDispatch *pWorkbook = (IDispatch*)NULL;
-   
-
-    try
-    {
-        //Create COM Instance
-        hr = XvbaCoCreateInstance(L"Excel.Application", pExcelCOM);
-        //Show Com
-        hr = XvbaShowApplication(pExcelCOM);
-        //Open Document
-       // hr = XvbaOpenDocument(szFilename,pExcelCOM,pWorkbook);
-        
-    }
-    catch (const std::exception&)
-    {
-        pExcelCOM->Release();
-        return hr;
-    }
-   
-	
-    return hr;
-
-}
 
 
 int XvbaShowApplication(IDispatch * &app) {
@@ -101,7 +69,6 @@ int XvbaOpenDocument(LPCTSTR szFilename,  IDispatch * &app, IDispatch * &pWorkbo
     }
     return hr;
 }
-
 
 HRESULT XvbaCoCreateInstance(LPCOLESTR lpszProgId, IDispatch * &app) {
 

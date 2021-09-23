@@ -5,8 +5,6 @@
 
 //https://www.codeproject.com/Articles/2995/The-Complete-Guide-to-C-Strings-Part-I-Win32-Chara
 
-
-
 extern "C" __declspec(dllexport) int  XvbaImportVBA(LPCTSTR szFilename);
 
 /*
@@ -25,6 +23,7 @@ extern "C" __declspec(dllexport) int  XvbaImportVBA(LPCTSTR szFilename);
  hr=OLEMethod(DISPATCH_PROPERTYPUT, NULL, pWApp, L"Visible", 1, x);
 
 */
+extern "C" __declspec(dllexport) HRESULT XvbaInvoke(int nType, VARIANT * pvResult, IDispatch * pDisp, LPCTSTR ptName, int cArgs...);
 
 extern "C" __declspec(dllexport) HRESULT XvbaCoCreateInstance(LPCOLESTR lpszProgId, IDispatch * &app);
 
@@ -32,4 +31,8 @@ extern "C" __declspec(dllexport) int XvbaOpenDocument(LPCTSTR szFilename, IDispa
 
 extern "C" __declspec(dllexport) int XvbaShowApplication(IDispatch * &app);
 
+
+extern "C" __declspec(dllexport) HRESULT XvbaGetVBComponets(IDispatch * &app, IDispatch * &pVBAComponents);
+
+extern "C" __declspec(dllexport) HRESULT XvbaGetPropertie(LPCTSTR pProp, IDispatch*& pDisp, IDispatch*& pResult);
 
