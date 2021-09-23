@@ -2,7 +2,12 @@
 #include "windows.h"
 
 
-extern "C" __declspec(dllexport) HRESULT  DoSomething(LPCOLESTR lpszProgId, OLECHAR * prop);
+
+//https://www.codeproject.com/Articles/2995/The-Complete-Guide-to-C-Strings-Part-I-Win32-Chara
+
+
+
+extern "C" __declspec(dllexport) HRESULT  XvbaImportVBA(LPCTSTR szFilename);
 
 /*
  Imvoke methos or Prop from COMs
@@ -20,4 +25,10 @@ extern "C" __declspec(dllexport) HRESULT  DoSomething(LPCOLESTR lpszProgId, OLEC
  hr=OLEMethod(DISPATCH_PROPERTYPUT, NULL, pWApp, L"Visible", 1, x);
 
 */
-extern "C" __declspec(dllexport) HRESULT XvbaInvoke(int nType, VARIANT * pvResult, IDispatch * pDisp, LPOLESTR ptName, int cArgs...);
+extern "C" __declspec(dllexport) HRESULT XvbaInvoke(int nType, VARIANT * pvResult, IDispatch * pDisp, LPCTSTR propertyName, int  cArgs...);
+
+extern "C" __declspec(dllexport) HRESULT XvbaCoCreateInstance(LPCOLESTR lpszProgId, IDispatch * app);
+
+extern "C" __declspec(dllexport) HRESULT OpenDocument(LPCTSTR szFilename, IDispatch * app, IDispatch * pWorkbook);
+
+

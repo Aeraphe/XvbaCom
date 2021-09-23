@@ -3,17 +3,125 @@
 #include "windows.h"
 
 
-HRESULT XvbaInvoke(int nType, VARIANT* pvResult, IDispatch* pDisp, LPOLESTR ptName, int cArgs...)
+HRESULT XvbaImportVBA(LPCTSTR szFilename) {
+
+	
+	HRESULT hr;
+	IDispatch* pExcelCOM = (IDispatch*)NULL;
+    IDispatch* pWorkbook = (IDispatch*)NULL;
+
+
+    hr = XvbaCoCreateInstance(L"Excel.Application",  pExcelCOM);
+
+    if (FAILED(hr)) {
+        return hr;
+    }
+
+    //Open 
+    hr = OpenDocument(szFilename, pExcelCOM, pWorkbook);
+
+    //Access VBA
+
+    if (FAILED(hr)) {
+        return hr;
+      
+    }
+
+    //Close COM
+    //app->Release();
+	
+    return hr;
+
+
+}
+
+
+
+HRESULT OpenDocument(LPCTSTR szFilename,  IDispatch* app, IDispatch* pWorkbook)
+{
+
+    HRESULT hr;
+
+
+    VARIANT fname;
+    VariantInit(&fname);
+    fname.vt = VT_BSTR;
+    fname.bstrVal = SysAllocString(szFilename);
+  
+ 
+    IDispatch* pDocuments;
+   
+
+    // GetDocuments
+    {
+        VARIANT result;
+        VariantInit(&result);
+        hr = XvbaInvoke(DISPATCH_PROPERTYGET, &result, app, L"Workbooks", 0);
+        pDocuments = result.pdispVal;
+    }
+    // OpenDocument
+    {
+        VARIANT result;
+        VariantInit(&result);
+        hr = XvbaInvoke(DISPATCH_METHOD, &result, pDocuments,L"Open", 1, fname);
+        pWorkbook = result.pdispVal;
+    }
+    return hr;
+}
+
+
+HRESULT XvbaCoCreateInstance(LPCOLESTR lpszProgId, IDispatch* app) {
+
+    CLSID clsId;
+
+    HRESULT hr;
+
+    hr = CoInitialize(NULL);
+
+    if (FAILED(hr)) {
+
+        printf("Fail ConInitialize - [%x]\n", hr);
+        goto error;
+    }
+
+    hr = CLSIDFromProgID(lpszProgId, &clsId);
+
+    if (FAILED(hr)) {
+        printf("Fail CLSIDFromProgID - [%x]\n", hr);
+        goto error;
+    }
+
+
+    hr = CoCreateInstance(clsId, NULL, CLSCTX_SERVER, IID_IDispatch, (void**)&app);
+
+    if (FAILED(hr)) {
+        printf("Fail CLSIDFromProgID - [%x]\n", hr);
+        goto error;
+    }
+
+
+error:
+    return hr;
+}
+
+
+
+HRESULT XvbaInvoke(int nType, VARIANT* pvResult, IDispatch* pDisp, LPCTSTR propertyName, int  cArgs... )
 {
     if (!pDisp) return E_FAIL;
 
+ 
     va_list marker;
     va_start(marker, cArgs);
 
-    DISPPARAMS dp = { NULL, NULL, 0, 0 };
+    //https://docs.microsoft.com/en-us/windows/win32/api/oaidl/ns-oaidl-dispparams
+    DISPPARAMS dp = { NULL, NULL, 0, 0 };   
     DISPID dispidNamed = DISPID_PROPERTYPUT;
     DISPID dispID;
     char szName[256];
+
+    std::wstring str = propertyName;
+    LPOLESTR ptName = (LPOLESTR) new wchar_t[str.length() + 1];
 
     // Convert down to ANSI
     WideCharToMultiByte(CP_ACP, 0, ptName, -1, szName, 256, NULL, NULL);
@@ -25,7 +133,7 @@ HRESULT XvbaInvoke(int nType, VARIANT* pvResult, IDispatch* pDisp, LPOLESTR ptNa
         return hr;
     }
     // Allocate memory for arguments...
-    VARIANT* pArgs = new VARIANT[static_cast<unsigned __int64>(cArgs) + 1];
+    VARIANT* pArgs = new VARIANT[cArgs + 1];
     // Extract arguments...
     for (int i = 0; i < cArgs; i++) {
         pArgs[i] = va_arg(marker, VARIANT);
@@ -42,8 +150,7 @@ HRESULT XvbaInvoke(int nType, VARIANT* pvResult, IDispatch* pDisp, LPOLESTR ptNa
     }
 
     // Make the call!
-    hr = pDisp->Invoke(dispID, IID_NULL, LOCALE_SYSTEM_DEFAULT,
-        nType, &dp, pvResult, NULL, NULL);
+    hr = pDisp->Invoke(dispID, IID_NULL, LOCALE_SYSTEM_DEFAULT,nType, &dp, pvResult, NULL, NULL);
     if (FAILED(hr)) {
         return hr;
     }
@@ -52,84 +159,7 @@ HRESULT XvbaInvoke(int nType, VARIANT* pvResult, IDispatch* pDisp, LPOLESTR ptNa
     va_end(marker);
     delete[] pArgs;
     return hr;
+
+
 }
-
-
-HRESULT DoSomething(LPCOLESTR lpszProgId,OLECHAR* prop) {
-
-	
-
-	CLSID clsId;
-
-	HRESULT hr;
-
-	IDispatch* app = (IDispatch*)NULL;
-
-
-	VARIANT x;
-	x.vt = VT_I4;
-	x.lVal = 1;
-
-	DISPID propID;
-
-
-	
-	unsigned returnArg;
-
-	VARIANT varTrue;
-	DISPID rgDispidNamedArgs[1];
-	rgDispidNamedArgs[0] = DISPID_PROPERTYPUT;
-	DISPPARAMS params = { &varTrue, rgDispidNamedArgs, 1, 1 };
-
-	varTrue.vt = VT_I4;
-	varTrue.lVal = 1;
-
-	hr = CoInitialize(NULL);
-		 
-	if (FAILED(hr)) {
-
-		printf("Fail ConInitialize - [%x]\n", hr);
-		goto error;
-	}
-
-	hr = CLSIDFromProgID(lpszProgId, &clsId);
-
-	if (FAILED(hr)) {
-		printf("Fail CLSIDFromProgID - [%x]\n", hr);
-		goto error;
-	}
-
-
-	hr = CoCreateInstance(clsId, NULL, CLSCTX_SERVER, IID_IDispatch, (void**)&app);
-
-	if (FAILED(hr)) {
-		printf("Fail CLSIDFromProgID - [%x]\n", hr);
-		goto error;
-	}
-
-
-
-
-	hr = XvbaInvoke(DISPATCH_PROPERTYPUT, NULL, app, prop, 1, x);
-
-  hr =	app->GetIDsOfNames(IID_NULL, &prop, 1, LOCALE_SYSTEM_DEFAULT, &propID);
-
-  if (FAILED(hr)) {
-	  printf("Fail GetIDsOfNames - [%x]\n", hr);
-	  goto error;
-  }
-
-  
-  app->Invoke(propID, IID_NULL, LOCALE_SYSTEM_DEFAULT, DISPATCH_PROPERTYPUT, &params, NULL, NULL, NULL);
-
-
-
-
-	return hr;
-
-error:
-	return hr;
-}
-
-
 
