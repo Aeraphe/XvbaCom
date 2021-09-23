@@ -7,7 +7,7 @@
 
 
 
-extern "C" __declspec(dllexport) HRESULT  XvbaImportVBA(LPCTSTR szFilename);
+extern "C" __declspec(dllexport) int  XvbaImportVBA(LPCTSTR szFilename);
 
 /*
  Imvoke methos or Prop from COMs
@@ -25,10 +25,11 @@ extern "C" __declspec(dllexport) HRESULT  XvbaImportVBA(LPCTSTR szFilename);
  hr=OLEMethod(DISPATCH_PROPERTYPUT, NULL, pWApp, L"Visible", 1, x);
 
 */
-extern "C" __declspec(dllexport) HRESULT XvbaInvoke(int nType, VARIANT * pvResult, IDispatch * pDisp, LPCTSTR propertyName, int  cArgs...);
 
-extern "C" __declspec(dllexport) HRESULT XvbaCoCreateInstance(LPCOLESTR lpszProgId, IDispatch * app);
+extern "C" __declspec(dllexport) HRESULT XvbaCoCreateInstance(LPCOLESTR lpszProgId, IDispatch * &app);
 
-extern "C" __declspec(dllexport) HRESULT OpenDocument(LPCTSTR szFilename, IDispatch * app, IDispatch * pWorkbook);
+extern "C" __declspec(dllexport) int XvbaOpenDocument(LPCTSTR szFilename, IDispatch * &app, IDispatch * &pWorkbook);
+
+extern "C" __declspec(dllexport) int XvbaShowApplication(IDispatch * &app);
 
 
