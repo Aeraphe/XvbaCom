@@ -104,5 +104,37 @@ HRESULT XvbaCoCreateInstance(LPCOLESTR lpszProgId, IDispatch * &app) {
 }
 
 
+HRESULT XvbaGetVBComponets(IDispatch*& app, IDispatch*& pVBAComponents) {
+
+    HRESULT hr;
+    IDispatch* pVbProject = (IDispatch*)NULL;
+
+    // GetVBProject
+    {
+        VARIANT result;
+        VariantInit(&result);
+        hr = XvbaInvoke(DISPATCH_PROPERTYGET, &result, app, L"VBProject", 0);
+        pVbProject = result.pdispVal;
+
+        if (FAILED(hr)) {
+            return hr;
+        }
+    }
+
+    // GetDocuments
+    {
+        VARIANT result;
+        VariantInit(&result);
+        hr = XvbaInvoke(DISPATCH_PROPERTYGET, &result, pVbProject, L"VBComponents", 0);
+        pVBAComponents = result.pdispVal;
+
+        if (FAILED(hr)) {
+            return hr;
+        }
+    }
+
+}
+
+
 
 
