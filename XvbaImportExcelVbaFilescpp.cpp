@@ -21,7 +21,8 @@ int XvbaImportVBA(LPCTSTR szFilename) {
         hr = XvbaShowApplication(pExcelCOM); 
         //Open Document
         hr = XvbaOpenDocument(szFilename,pExcelCOM,pWorkbook);
-
+       //VBAComponents
+        hr = XvbaGetVBComponets(pWorkbook, pVBAComponents);
 
 
     }
