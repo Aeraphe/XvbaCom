@@ -141,8 +141,10 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="XvbaCom.h" />
+    <ClInclude Include="XvbaInvoke.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="XvbaInvoke.cpp" />
     <ClCompile Include="XvbaCom.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
