@@ -141,9 +141,9 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="XvbaCom.h" />
-    <ClInclude Include="XvbaInvoke.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="XvbaImportExcelVbaFilescpp.cpp" />
     <ClCompile Include="XvbaInvoke.cpp" />
     <ClCompile Include="XvbaCom.cpp" />
   </ItemGroup>
