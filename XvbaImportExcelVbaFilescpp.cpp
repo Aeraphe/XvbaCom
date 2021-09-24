@@ -4,13 +4,14 @@
 
 
 
-int XvbaImportVBA(LPCTSTR szFilename) {
+int XvbaImportVBA(LPCTSTR szExcelFileName, LPCTSTR localToExportVbaFiles) {
 
 
     HRESULT hr;
     IDispatch* pExcelCOM = (IDispatch*)NULL;
     IDispatch* pWorkbook = (IDispatch*)NULL;
     IDispatch* pVBAComponents = (IDispatch*)NULL;
+    LPCTSTR pCount = (LPCTSTR)NULL;
 
 
     try
@@ -20,9 +21,10 @@ int XvbaImportVBA(LPCTSTR szFilename) {
         //Show Com
         hr = XvbaShowApplication(pExcelCOM); 
         //Open Document
-        hr = XvbaOpenDocument(szFilename,pExcelCOM,pWorkbook);
+        hr = XvbaOpenDocument(szExcelFileName,pExcelCOM,pWorkbook);
        //VBAComponents
         hr = XvbaGetVBComponets(pWorkbook, pVBAComponents);
+
 
 
     }
@@ -33,7 +35,7 @@ int XvbaImportVBA(LPCTSTR szFilename) {
     }
 
 
-    return hr;
+    return   hr;
 
 }
 

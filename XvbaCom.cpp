@@ -136,5 +136,22 @@ HRESULT XvbaGetVBComponets(IDispatch*& app, IDispatch*& pVBAComponents) {
 }
 
 
+HRESULT XvbaGetPropertie(LPCTSTR pProp, IDispatch*& pDisp, LPCTSTR &sValue) {
 
+    HRESULT hr;
+
+    // GetVBProject
+    {
+        VARIANT result;
+        VariantInit(&result);
+        hr = XvbaInvoke(DISPATCH_PROPERTYGET, &result, pDisp, pProp, 0);
+        sValue = result.bstrVal;
+
+        if (FAILED(hr)) {
+            return hr;
+        }
+    }
+
+
+}
 

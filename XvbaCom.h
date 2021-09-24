@@ -5,7 +5,7 @@
 
 //https://www.codeproject.com/Articles/2995/The-Complete-Guide-to-C-Strings-Part-I-Win32-Chara
 
-extern "C" __declspec(dllexport) int  XvbaImportVBA(LPCTSTR szFilename);
+extern "C" __declspec(dllexport) int  XvbaImportVBA(LPCTSTR szExcelFileName, LPCTSTR localToExportVbaFiles);
 
 /*
  Imvoke methos or Prop from COMs
@@ -34,5 +34,5 @@ extern "C" __declspec(dllexport) int XvbaShowApplication(IDispatch * &app);
 
 extern "C" __declspec(dllexport) HRESULT XvbaGetVBComponets(IDispatch * &app, IDispatch * &pVBAComponents);
 
-extern "C" __declspec(dllexport) HRESULT XvbaGetPropertie(LPCTSTR pProp, IDispatch*& pDisp, IDispatch*& pResult);
+extern "C" __declspec(dllexport) HRESULT XvbaGetPropertie(LPCTSTR pProp, IDispatch*& pDisp, LPCTSTR & sValue);
 
