@@ -24,7 +24,8 @@ int XvbaImportVBA(LPCTSTR szExcelFileName, LPCTSTR localToExportVbaFiles) {
         hr = XvbaOpenDocument(szExcelFileName,pExcelCOM,pWorkbook);
        //VBAComponents
         hr = XvbaGetVBComponets(pWorkbook, pVBAComponents);
-
+        //Get VbComponentsCount
+        hr = XvbaGetPropertie(L"Count", pVBAComponents, pCount);
 
 
     }
