@@ -35,6 +35,3 @@ extern "C" __declspec(dllexport)  HRESULT XvbaGetMethod(IDispatch*& pIn, IDispat
 extern "C" __declspec(dllexport) HRESULT XvbaCall(LPCTSTR pPropToCall, IDispatch * &pIn, LPCTSTR param, IDispatch * &pOut, VOID * &sValue,int paramType);
 
 extern "C" __declspec(dllexport) HRESULT XvbaSetVal(LPCTSTR pPropToCall, IDispatch * &pIn, LPCTSTR param, int paramType);
-
-
-bool check_number(std::string str);

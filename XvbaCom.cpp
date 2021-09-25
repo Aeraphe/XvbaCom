@@ -169,12 +169,3 @@ HRESULT XvbaSetVal(LPCTSTR pPropToCall, IDispatch*& pIn, LPCTSTR param,  int par
 
 	return hr;
 }
-
-
-//check if number or string
-bool check_number(std::string str) {
-	for (int i = 0; i < str.length(); i++)
-		if (isdigit(str[i]) == false)
-			return false;
-	return true;
-}
