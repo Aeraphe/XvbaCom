@@ -13,8 +13,6 @@ enum XVBA_ERROR {
 
 
 
-
-
 int XvbaShowApplication(IDispatch*& app) {
 
 	HRESULT hr;
@@ -27,49 +25,6 @@ int XvbaShowApplication(IDispatch*& app) {
 		return hr;
 	}
 
-	return hr;
-}
-
-int XvbaOpenDocument(LPCTSTR szFilename, IDispatch*& app, IDispatch*& pWorkbook)
-{
-
-	HRESULT hr;
-
-
-	VARIANT fname;
-	VariantInit(&fname);
-	fname.vt = VT_BSTR;
-	fname.bstrVal = SysAllocString(szFilename);
-
-
-	IDispatch* pDocuments;
-
-
-	// GetDocuments
-	{
-		VARIANT result;
-		VariantInit(&result);
-		hr = XvbaInvoke(DISPATCH_PROPERTYGET, &result, app, L"Workbooks", 0);
-		pDocuments = result.pdispVal;
-
-		if (FAILED(hr)) {
-			return hr;
-		}
-	}
-
-	// OpenDocument
-	{
-		VARIANT result;
-		VariantInit(&result);
-		hr = XvbaInvoke(DISPATCH_METHOD, &result, pDocuments, L"Open", 1, fname);
-		pWorkbook = result.pdispVal;
-
-		if (FAILED(hr)) {
-
-			return XVBA_ERROR::INVOKE;
-
-		}
-	}
 	return hr;
 }
 
@@ -106,7 +61,6 @@ HRESULT XvbaCoCreateInstance(LPCOLESTR lpszProgId, IDispatch*& app) {
 	return hr;
 }
 
-
 HRESULT XvbaGetVBComponets(IDispatch*& app, IDispatch*& pVBAComponents) {
 
 	HRESULT hr;
@@ -139,9 +93,6 @@ HRESULT XvbaGetVBComponets(IDispatch*& app, IDispatch*& pVBAComponents) {
 
 	return hr;
 }
-
-
-
 
 HRESULT XvbaGetMethod(IDispatch*& pIn, IDispatch*& pOut, LPCTSTR pMenthodName) {
 

@@ -27,8 +27,6 @@ extern "C" __declspec(dllexport) HRESULT XvbaInvoke(int nType, VARIANT * pvResul
 
 extern "C" __declspec(dllexport) HRESULT XvbaCoCreateInstance(LPCOLESTR lpszProgId, IDispatch * &app);
 
-extern "C" __declspec(dllexport) int XvbaOpenDocument(LPCTSTR szFilename, IDispatch * &app, IDispatch * &pWorkbook);
-
 extern "C" __declspec(dllexport) int XvbaShowApplication(IDispatch * &app);
 
 extern "C" __declspec(dllexport) HRESULT XvbaGetVBComponets(IDispatch * &app, IDispatch * &pVBAComponents);
