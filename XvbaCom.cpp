@@ -13,21 +13,6 @@ enum XVBA_ERROR {
 
 
 
-int XvbaShowApplication(IDispatch*& app) {
-
-	HRESULT hr;
-	VARIANT x;
-	x.vt = VT_I4;
-	x.lVal = 1;
-	hr = XvbaInvoke(DISPATCH_PROPERTYPUT, NULL, app, L"Visible", 1, x);
-
-	if (FAILED(hr)) {
-		return hr;
-	}
-
-	return hr;
-}
-
 HRESULT XvbaCoCreateInstance(LPCOLESTR lpszProgId, IDispatch*& app) {
 
 	CLSID clsId;
