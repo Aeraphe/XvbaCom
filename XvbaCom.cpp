@@ -154,9 +154,45 @@ HRESULT XvbaGetMethod(IDispatch*& pIn, IDispatch*& pOut, LPCTSTR pMenthodName) {
 	return   hr;
 }
 
+HRESULT XvbaGetPropertyValue(LPCTSTR pPropToCall, IDispatch*& pIn, LPCTSTR param, IDispatch*& pOut, VOID *& valueOut,int paramType) {
+
+	HRESULT hr = 0;
+
+	VARIANT result;
+	VariantInit(&result);
 
 
+	if (!param || !param[0]) {
+		hr = XvbaInvoke(DISPATCH_PROPERTYGET, &result, pIn, pPropToCall, 0);
+	}
+	else {
 
+		VARIANT vProperty;
+		VariantInit(&vProperty);
+		vProperty.vt = VT_BSTR;
+		vProperty.bstrVal = SysAllocString(param);
+
+		hr = XvbaInvoke(DISPATCH_PROPERTYGET, &result, pIn, pPropToCall, 1, vProperty);
+	}
+
+
+	if (FAILED(hr)) {
+		return hr;
+	}
+
+	if (result.iVal) {
+
+		valueOut = &result.iVal;
+	}
+	else {
+		valueOut = &result.bstrVal;
+	}
+
+	pOut = result.pdispVal;
+
+
+	return hr;
+}
 
 
 //check if number or string

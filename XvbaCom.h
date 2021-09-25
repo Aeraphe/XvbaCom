@@ -35,8 +35,7 @@ extern "C" __declspec(dllexport) HRESULT XvbaGetVBComponets(IDispatch * &app, ID
 
 extern "C" __declspec(dllexport)  HRESULT XvbaGetMethod(IDispatch*& pIn, IDispatch*& pOut, LPCTSTR pMenthodName);
 
-
-
+extern "C" __declspec(dllexport) HRESULT XvbaGetPropertyValue(LPCTSTR pPropToCall, IDispatch * &pIn, LPCTSTR param, IDispatch * &pOut, VOID * &sValue,int paramType);
 
 
 
