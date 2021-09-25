@@ -1,6 +1,6 @@
 #pragma once
 #include "windows.h"
-
+#include <iostream>
 
 
 //https://www.codeproject.com/Articles/2995/The-Complete-Guide-to-C-Strings-Part-I-Win32-Chara
@@ -31,8 +31,13 @@ extern "C" __declspec(dllexport) int XvbaOpenDocument(LPCTSTR szFilename, IDispa
 
 extern "C" __declspec(dllexport) int XvbaShowApplication(IDispatch * &app);
 
-
 extern "C" __declspec(dllexport) HRESULT XvbaGetVBComponets(IDispatch * &app, IDispatch * &pVBAComponents);
 
-extern "C" __declspec(dllexport) HRESULT XvbaGetPropertie(LPCTSTR pProp, IDispatch*& pDisp, LPCTSTR & sValue);
+extern "C" __declspec(dllexport)  HRESULT XvbaGetMethod(IDispatch*& pIn, IDispatch*& pOut, LPCTSTR pMenthodName);
 
+
+
+
+
+
+bool check_number(std::string str);
