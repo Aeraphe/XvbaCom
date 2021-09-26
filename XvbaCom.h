@@ -32,6 +32,16 @@ extern "C" __declspec(dllexport) HRESULT XvbaGetVBComponets(IDispatch * &app, ID
 
 extern "C" __declspec(dllexport)  HRESULT XvbaGetMethod(IDispatch*& pIn, IDispatch*& pOut, LPCTSTR pMenthodName);
 
-extern "C" __declspec(dllexport) HRESULT XvbaCall(LPCTSTR pPropToCall, IDispatch * &pIn, LPCTSTR param, IDispatch * &pOut, VOID * &sValue,int paramType);
+extern "C" __declspec(dllexport) HRESULT XvbaCall(LPCTSTR pPropToCall, IDispatch * &pIn, LPCTSTR param, IDispatch * &pOut, VOID *& sValue,int paramType);
 
 extern "C" __declspec(dllexport) HRESULT XvbaSetVal(LPCTSTR pPropToCall, IDispatch * &pIn, LPCTSTR param, int paramType);
+
+extern "C" __declspec(dllexport) HRESULT XvbaRelease(IDispatch * &pIn);
+
+
+std::wstring ConvertBSTRToMBS(BSTR bstr);
+
+std::wstring ConvertWCSToMBS(const wchar_t* pstr, long wslen);
+
+BSTR ConvertMBSToBSTR(const std::string& str);
+

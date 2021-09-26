@@ -1,6 +1,8 @@
 #include "XvbaCom.h"
 #include "windows.h"
 #include <iostream>
+#include <string>
+#include <comdef.h>
 
 enum XVBA_ERROR {
 
@@ -98,8 +100,10 @@ HRESULT XvbaCall(LPCTSTR pPropToCall, IDispatch*& pIn, LPCTSTR param, IDispatch*
 	VariantInit(&result);
 
 	if (!param || !param[0]) {
-
+	
 		hr = XvbaInvoke(DISPATCH_PROPERTYGET, &result, pIn, pPropToCall, 0);
+		if (FAILED(hr)) return hr;
+		
 	}
 	else {
 		VARIANT vProperty;
@@ -120,16 +124,20 @@ HRESULT XvbaCall(LPCTSTR pPropToCall, IDispatch*& pIn, LPCTSTR param, IDispatch*
 	}
 
 
-	if (FAILED(hr)) {
-		return hr;
-	}
 
-	if (result.iVal) {
+
+	if (!result.iVal) {
 
 		valueOut = &result.iVal;
 	}
-	else {
-		valueOut = &result.bstrVal;
+	if(!result.dblVal) {
+		BSTR bs = SysAllocString(L"Hello");
+
+		std::wstring* r;
+		std::wstring  resp = ConvertBSTRToMBS(result.bstrVal);
+	
+	
+		valueOut = (LPCSTR*) "OK";
 	}
 
 	pOut = result.pdispVal;
@@ -168,4 +176,43 @@ HRESULT XvbaSetVal(LPCTSTR pPropToCall, IDispatch*& pIn, LPCTSTR param,  int par
 
 
 	return hr;
+}
+
+
+HRESULT XvbaRelease(IDispatch*& pIn) {
+
+	return pIn->Release();
+};
+
+
+std::wstring ConvertBSTRToMBS(BSTR bstr)
+{
+	int wslen = ::SysStringLen(bstr);
+	return ConvertWCSToMBS((wchar_t*)bstr, wslen);
+}
+
+std::wstring ConvertWCSToMBS(const wchar_t* pstr, long wslen)
+{
+	int len = ::WideCharToMultiByte(CP_ACP, 0, pstr, wslen, NULL, 0, NULL, NULL);
+
+	std::wstring dblstr(len, '\0');
+	len = ::WideCharToMultiByte(CP_ACP, 0 /* no flags */,
+		pstr, wslen /* not necessary NULL-terminated */,
+		NULL, len,
+		NULL, NULL /* no default char */);
+
+	return dblstr;
+}
+
+BSTR ConvertMBSToBSTR(const std::string& str)
+{
+	int wslen = ::MultiByteToWideChar(CP_ACP, 0 /* no flags */,
+		str.data(), str.length(),
+		NULL, 0);
+
+	BSTR wsdata = ::SysAllocStringLen(NULL, wslen);
+	::MultiByteToWideChar(CP_ACP, 0 /* no flags */,
+		str.data(), str.length(),
+		wsdata, wslen);
+	return wsdata;
 }
