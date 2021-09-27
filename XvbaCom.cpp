@@ -2,7 +2,7 @@
 #include "windows.h"
 #include <iostream>
 #include <string>
-
+#include <comdef.h>
 
 enum XVBA_ERROR {
 
@@ -86,11 +86,24 @@ HRESULT XvbaGetMethod(IDispatch*& pIn, IDispatch*& pOut, LPCTSTR pMenthodName) {
 	HRESULT hr = 0;
 	VARIANT result;
 	VariantInit(&result);
-	hr = XvbaInvoke(DISPATCH_PROPERTYGET, &result, pIn, pMenthodName, 0);
+	hr = XvbaInvoke(DISPATCH_PROPERTYGET | DISPATCH_METHOD, &result, pIn, pMenthodName, 0);
 	pOut = result.pdispVal;
 
 	return   hr;
 }
+
+
+HRESULT XvbaGetPropertyRef(IDispatch*& pIn, IDispatch*& pOut, LPCTSTR pMenthodName) {
+
+	HRESULT hr = 0;
+	VARIANT result;
+	VariantInit(&result);
+	hr = XvbaInvoke(DISPATCH_PROPERTYPUTREF, &result, pIn, pMenthodName, 0);
+	pOut = result.pdispVal;
+
+	return   hr;
+}
+
 
 HRESULT XvbaCall(LPCTSTR pPropToCall, IDispatch*& pIn, LPCTSTR param, IDispatch*& pOut, VOID*& valueOut, int paramType) {
 
@@ -100,45 +113,52 @@ HRESULT XvbaCall(LPCTSTR pPropToCall, IDispatch*& pIn, LPCTSTR param, IDispatch*
 	VariantInit(&result);
 
 	if (!param || !param[0]) {
-	
-		hr = XvbaInvoke(DISPATCH_PROPERTYGET, &result, pIn, pPropToCall, 0);
+
+		hr = XvbaInvoke(DISPATCH_PROPERTYGET | DISPATCH_METHOD, &result, pIn, pPropToCall, 0);
 		if (FAILED(hr)) return hr;
-		
+
 	}
 	else {
 		VARIANT vProperty;
 		VariantInit(&vProperty);
 		//Integer
+
 		if (paramType == 1) {
+
+			result.vt = VT_I4;
 			vProperty.vt = VT_I4;
 			vProperty.lVal = 1;
 		}
 		//String
 		else {
 			vProperty.vt = VT_BSTR;
+			vProperty.vt = VT_BSTR;
 			vProperty.bstrVal = SysAllocString(param);
 		}
 
-		hr = XvbaInvoke(DISPATCH_PROPERTYGET, &result, pIn, pPropToCall, 1, vProperty);
+		hr = XvbaInvoke(DISPATCH_PROPERTYGET | DISPATCH_METHOD, &result, pIn, pPropToCall, 1, vProperty);
+
+	}
+
+	//BSTR bs = SysAllocString(L"Hello");
+
+	//std::wstring* r;
+	//std::wstring  resp = ConvertBSTRToMBS(result.bstrVal);
+
+
+	switch (result.vt)
+	{
+	case VT_I4:
+		valueOut = (LONG*)result.lVal;
+		break;
+	case VT_BSTR:
+		valueOut = (LPCSTR*)result.bstrVal;
+		break;
 
 	}
 
 
 
-
-	if (!result.iVal) {
-
-		valueOut = &result.iVal;
-	}
-	if(!result.dblVal) {
-		BSTR bs = SysAllocString(L"Hello");
-
-		std::wstring* r;
-		std::wstring  resp = ConvertBSTRToMBS(result.bstrVal);
-	
-	
-		valueOut = (LPCSTR*) "OK";
-	}
 
 	pOut = result.pdispVal;
 
@@ -146,7 +166,7 @@ HRESULT XvbaCall(LPCTSTR pPropToCall, IDispatch*& pIn, LPCTSTR param, IDispatch*
 	return hr;
 }
 
-HRESULT XvbaSetVal(LPCTSTR pPropToCall, IDispatch*& pIn, LPCTSTR param,  int paramType) {
+HRESULT XvbaSetVal(LPCTSTR pPropToCall, IDispatch*& pIn, LPCTSTR param, int paramType) {
 
 	HRESULT hr = 0;
 
