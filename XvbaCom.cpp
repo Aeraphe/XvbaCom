@@ -3,6 +3,11 @@
 #include <iostream>
 #include <string>
 #include <comdef.h>
+#include <atlbase.h>
+#include <stdlib.h>
+
+#include "comutil.h"
+
 
 enum XVBA_ERROR {
 
@@ -140,10 +145,12 @@ HRESULT XvbaCall(LPCTSTR pPropToCall, IDispatch*& pIn, LPCTSTR param, IDispatch*
 
 	}
 
-	//BSTR bs = SysAllocString(L"Hello");
+	
 
-	//std::wstring* r;
-	//std::wstring  resp = ConvertBSTRToMBS(result.bstrVal);
+
+	char* myCharArray = NULL;
+
+	
 
 
 	switch (result.vt)
@@ -152,7 +159,14 @@ HRESULT XvbaCall(LPCTSTR pPropToCall, IDispatch*& pIn, LPCTSTR param, IDispatch*
 		valueOut = (LONG*)result.lVal;
 		break;
 	case VT_BSTR:
-		valueOut = (LPCSTR*)result.bstrVal;
+
+
+
+		myCharArray = _com_util::ConvertBSTRToString(result.bstrVal);
+		
+		valueOut = myCharArray;
+
+	
 		break;
 
 	}
