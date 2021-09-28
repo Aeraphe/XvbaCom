@@ -53,38 +53,7 @@ HRESULT XvbaCoCreateInstance(LPCOLESTR lpszProgId, IDispatch*& app) {
 	return hr;
 }
 
-HRESULT XvbaGetVBComponets(IDispatch*& app, IDispatch*& pVBAComponents) {
 
-	HRESULT hr;
-	IDispatch* pVbProject = (IDispatch*)NULL;
-
-	// GetVBProject
-	{
-		VARIANT result;
-		VariantInit(&result);
-		hr = XvbaInvoke(DISPATCH_PROPERTYGET, &result, app, L"VBProject", 0);
-		pVbProject = result.pdispVal;
-
-		if (FAILED(hr)) {
-			return hr;
-		}
-	}
-
-	// GetDocuments
-	{
-		VARIANT result;
-		VariantInit(&result);
-		hr = XvbaInvoke(DISPATCH_PROPERTYGET, &result, pVbProject, L"VBComponents", 0);
-		pVBAComponents = result.pdispVal;
-
-		if (FAILED(hr)) {
-			return hr;
-		}
-	}
-
-
-	return hr;
-}
 
 HRESULT XvbaGetMethod(IDispatch*& pIn, IDispatch*& pOut, LPCTSTR pMenthodName) {
 
@@ -110,48 +79,57 @@ HRESULT XvbaGetPropertyRef(IDispatch*& pIn, IDispatch*& pOut, LPCTSTR pMenthodNa
 }
 
 
-HRESULT XvbaCall(LPCTSTR pPropToCall, IDispatch*& pIn, LPCTSTR param, IDispatch*& pOut, VOID*& valueOut, int paramType) {
+HRESULT XvbaCall(LPCTSTR pPropToCall, IDispatch*& pIn, VOID*& param, IDispatch*& pOut, VOID*& valueOut, int paramType, int param2) {
 
 	HRESULT hr = 0;
 
 	VARIANT result;
 	VariantInit(&result);
 
-	if (!param || !param[0]) {
+	VARIANT vProperty;
+	VariantInit(&vProperty);
+	//Integer
+
+	if (paramType == 100) {
 
 		hr = XvbaInvoke(DISPATCH_PROPERTYGET | DISPATCH_METHOD, &result, pIn, pPropToCall, 0);
 		if (FAILED(hr)) return hr;
 
 	}
-	else {
-		VARIANT vProperty;
-		VariantInit(&vProperty);
-		//Integer
 
-		if (paramType == 1) {
 
-			result.vt = VT_I4;
-			vProperty.vt = VT_I4;
-			vProperty.lVal = 1;
-		}
-		//String
-		else {
-			vProperty.vt = VT_BSTR;
-			vProperty.vt = VT_BSTR;
-			vProperty.bstrVal = SysAllocString(param);
-		}
 
+	if (paramType == 1) {
+		
+		INT32* inputValue = (INT32*)param;
+		
+		result.vt = VT_I4;
+		vProperty.vt = VT_I4;
+		vProperty.lVal = param2;
 		hr = XvbaInvoke(DISPATCH_PROPERTYGET | DISPATCH_METHOD, &result, pIn, pPropToCall, 1, vProperty);
-
 	}
 
-	
+	//String
+	if (paramType == 0) {
+
+
+		const char* bosta = (char*)param;
+		_bstr_t bstrt(bosta);
+
+
+		vProperty.vt = VT_BSTR;
+		vProperty.vt = VT_BSTR;
+		vProperty.bstrVal = bstrt;
+		hr = XvbaInvoke(DISPATCH_PROPERTYGET | DISPATCH_METHOD, &result, pIn, pPropToCall, 1, vProperty);
+	}
+
+
+
+
+
 
 
 	char* myCharArray = NULL;
-
-	
-
 
 	switch (result.vt)
 	{
@@ -159,14 +137,8 @@ HRESULT XvbaCall(LPCTSTR pPropToCall, IDispatch*& pIn, LPCTSTR param, IDispatch*
 		valueOut = (LONG*)result.lVal;
 		break;
 	case VT_BSTR:
-
-
-
 		myCharArray = _com_util::ConvertBSTRToString(result.bstrVal);
-		
 		valueOut = myCharArray;
-
-	
 		break;
 
 	}
