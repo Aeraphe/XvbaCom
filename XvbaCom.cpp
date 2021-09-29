@@ -101,11 +101,11 @@ HRESULT XvbaCall(LPCTSTR pPropToCall, IDispatch*& pIn, VOID*& param, IDispatch*&
 
 	if (paramType == 1) {
 		
-		INT32* inputValue = (INT32*)param;
+		INT32 inputValue = (INT32)param;
 		
 		result.vt = VT_I4;
 		vProperty.vt = VT_I4;
-		vProperty.lVal = param2;
+		vProperty.lVal = inputValue;
 		hr = XvbaInvoke(DISPATCH_PROPERTYGET | DISPATCH_METHOD, &result, pIn, pPropToCall, 1, vProperty);
 	}
 
