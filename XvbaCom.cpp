@@ -19,6 +19,13 @@ enum XVBA_ERROR {
 };
 
 
+struct InputValueStruct {
+	INT32 type;
+	INT32 intValue;
+	char*& stringValue;
+	bool boolValue;
+};
+
 
 HRESULT XvbaCoCreateInstance(LPCOLESTR lpszProgId, IDispatch*& app) {
 
@@ -79,7 +86,7 @@ HRESULT XvbaGetPropertyRef(IDispatch*& pIn, IDispatch*& pOut, LPCTSTR pMenthodNa
 }
 
 
-HRESULT XvbaCall(LPCTSTR pPropToCall, IDispatch*& pIn, VOID*& param, IDispatch*& pOut, VOID*& valueOut, int paramType, int param2) {
+HRESULT XvbaCall(LPCTSTR pPropToCall, IDispatch*& pIn, VOID*& param, IDispatch*& pOut, VOID*& valueOut, int paramType, int totalArrayParams) {
 
 	HRESULT hr = 0;
 
@@ -88,46 +95,63 @@ HRESULT XvbaCall(LPCTSTR pPropToCall, IDispatch*& pIn, VOID*& param, IDispatch*&
 
 	VARIANT vProperty;
 	VariantInit(&vProperty);
-	//Integer
 
-	if (paramType == 100) {
+
+	if (totalArrayParams > 0) {
+		struct InputValueStruct* paramArrayStruct = (struct InputValueStruct*)param;
+		// Allocate memory for arguments...
+		VARIANT* pArgs = new VARIANT[totalArrayParams];
+
+		for (int i = 0; i < totalArrayParams; i++) {
+
+
+			//Integer
+			if (paramArrayStruct->type == 1) {
+
+				result.vt = VT_I4;
+				vProperty.vt = VT_I4;
+				vProperty.lVal = paramArrayStruct->intValue;
+
+				pArgs[i] = vProperty;
+
+				std::cout << "-Integer-->\0" << "\n";
+			}
+			//String
+			if (paramArrayStruct->type == 0) {
+
+
+				struct InputValueStruct* a = (struct InputValueStruct*)param;
+				const char* bosta = (char*)&a[i].stringValue;
+
+				_bstr_t bstrt(bosta);
+
+				vProperty.vt = VT_BSTR;
+				vProperty.vt = VT_BSTR;
+				vProperty.bstrVal = bstrt;
+
+				pArgs[i] = vProperty;
+
+				std::cout << "-String-->\0" << "\n";
+			}
+
+
+
+
+		}//End For
+
+		hr = XvbaInvoke(DISPATCH_PROPERTYGET | DISPATCH_METHOD, &result, pIn, pPropToCall, totalArrayParams, pArgs);
+		if (FAILED(hr)) return hr;
+
+	}
+	else {
+
+
 
 		hr = XvbaInvoke(DISPATCH_PROPERTYGET | DISPATCH_METHOD, &result, pIn, pPropToCall, 0);
 		if (FAILED(hr)) return hr;
 
+
 	}
-
-
-
-	if (paramType == 1) {
-		
-		INT32 inputValue = (INT32)param;
-		
-		result.vt = VT_I4;
-		vProperty.vt = VT_I4;
-		vProperty.lVal = inputValue;
-		hr = XvbaInvoke(DISPATCH_PROPERTYGET | DISPATCH_METHOD, &result, pIn, pPropToCall, 1, vProperty);
-	}
-
-	//String
-	if (paramType == 0) {
-
-
-		const char* bosta = (char*)param;
-		_bstr_t bstrt(bosta);
-
-
-		vProperty.vt = VT_BSTR;
-		vProperty.vt = VT_BSTR;
-		vProperty.bstrVal = bstrt;
-		hr = XvbaInvoke(DISPATCH_PROPERTYGET | DISPATCH_METHOD, &result, pIn, pPropToCall, 1, vProperty);
-	}
-
-
-
-
-
-
 
 	char* myCharArray = NULL;
 
@@ -142,7 +166,6 @@ HRESULT XvbaCall(LPCTSTR pPropToCall, IDispatch*& pIn, VOID*& param, IDispatch*&
 		break;
 
 	}
-
 
 
 

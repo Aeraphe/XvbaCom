@@ -29,7 +29,7 @@ extern "C" __declspec(dllexport) HRESULT XvbaCoCreateInstance(LPCOLESTR lpszProg
 
 extern "C" __declspec(dllexport)  HRESULT XvbaGetMethod(IDispatch*& pIn, IDispatch*& pOut, LPCTSTR pMenthodName);
 
-extern "C" __declspec(dllexport) HRESULT XvbaCall(LPCTSTR pPropToCall, IDispatch * &pIn, VOID * &param, IDispatch * &pOut, VOID * &sValue, int paramType, int param2);
+extern "C" __declspec(dllexport) HRESULT XvbaCall(LPCTSTR pPropToCall, IDispatch * &pIn, VOID * &param, IDispatch * &pOut, VOID * &sValue, int paramType, int totalArrayParams);
 
 extern "C" __declspec(dllexport) HRESULT XvbaSetVal(LPCTSTR pPropToCall, IDispatch * &pIn, LPCTSTR param, int paramType);
 
