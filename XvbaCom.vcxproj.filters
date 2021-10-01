@@ -26,9 +26,6 @@
     <ClCompile Include="XvbaInvoke.cpp">
       <Filter>Arquivos de Recurso</Filter>
     </ClCompile>
-    <ClCompile Include="XvbaImportExcelVbaFilescpp.cpp">
-      <Filter>Arquivos de Recurso</Filter>
-    </ClCompile>
     <ClCompile Include="Helpers.cpp">
       <Filter>Arquivos de Recurso</Filter>
     </ClCompile>
